@@ -29,6 +29,8 @@ import useLooksStore from "../../store/looks"
 import useProductsStore from "../../store/products";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { ShopContext } from "../../context";
+import Flickity from 'react-flickity-component'
+
 import "../../embed.css"
 
 const ProductsModal = (props) => {
@@ -43,11 +45,11 @@ const ProductsModal = (props) => {
 
 	const renderProducts = () => {
 		if (products.get.loading) {
-			return <SimpleGrid  minChildWidth='330px' spacing='10px'>
+			return <SimpleGrid  minChildWidth='220px' spacing='10px'>
 				{
 					[1,2,3].map((e,i) => (
 						<Center p={4} key={i}>
-							<Skeleton width="330px" height="330px" />
+							<Skeleton width="160px" height="182px" />
 						</Center>
 					))
 				}
@@ -70,36 +72,36 @@ const ProductsModal = (props) => {
 			)
 		} else if (products.get.success.data.length) {
 			return (
-				<SimpleGrid  minChildWidth='330px' spacing='10px'>
+				<Flickity
+					options={{groupCells: 1, pageDots: false, contain: true, autoPlay: false }}
+    		>
 					{
 						products.get.success.data.map(product => (
-							<Center py={8} key={product.admin_graphql_api_id || product.id}>
+							<Center key={product.admin_graphql_api_id || product.id}>
 								<Box
 									role={'group'}
 									p={4}
-									maxW={'330px'}
+									maxW={'220px'}
 									w={'full'}
-									boxShadow={'2xl'}
 									rounded={'lg'}
 									pos={'relative'}
 									zIndex={1}>
 									<Box
 										rounded={'lg'}
-										mt={-12}
 										pos={'relative'}
-										height={'260px'}
+										height={'160px'}
 										_groupHover={{
 											_after: {
 												filter: 'blur(20px)',
 											},
 										}}>
-										<Carousel medias={product.images} height={260} width={282} />
+										<Carousel medias={product.images} height={160} width={182} />
 									</Box>
 									<Stack pt={3} align={'center'}>
-										<Text color={'gray.500'} fontSize={'sm'} textTransform={'uppercase'}>
+										<Text color={'gray.500'} fontSize={'xs'} textTransform={'uppercase'}>
 											{product.variants && product.variants.length ? `${product.variants.length} variants available` : null }
 										</Text>
-										<Heading textAlign="center" fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
+										<Heading textAlign="center" fontSize={'md'} fontFamily={'body'} fontWeight={500}>
 											{product.title}
 										</Heading>
 										<Link
@@ -108,14 +110,14 @@ const ProductsModal = (props) => {
 											target="_blank"
 											width="full"
 											>
-											<Button isFullWidth rightIcon={<ExternalLinkIcon />}>View Product</Button>
+											<Button fontSize="sm" isFullWidth rightIcon={<ExternalLinkIcon />}>View Product</Button>
 											</Link>
 									</Stack>
 								</Box>
 							</Center>
 						))
 					}
-				</SimpleGrid>
+				</Flickity>
 			);
 		
 		} else {
@@ -137,17 +139,11 @@ const ProductsModal = (props) => {
 			>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Shop the products in this look</ModalHeader>
-          <ModalCloseButton />
+          <ModalHeader margin="0" padding="0" textAlign="center" mt="12px">Shop the products in this look</ModalHeader>
+          <ModalCloseButton size="lg" border="1px solid black" />
           <ModalBody>
 						{renderProducts()}
           </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
@@ -211,20 +207,19 @@ const EmbedRoute = (props) => {
 					{ isModalvis ? <ProductsModal isOpen={isOpen} onClose={onModalClose} lookId={currentLookId} productIds={productIds} /> : null }
 					{
 						looks.get.success.data.map(look => (
-							<Center py={8} key={look.id || look.objectId}>
+							<Center key={look.id || look.objectId}>
 								<Box
 									role={'group'}
 									p={4}
 									maxW={'330px'}
 									w={'full'}
 									bg={bgColor}
-									boxShadow={'2xl'}
+									// boxShadow={'2xl'}
 									rounded={'lg'}
 									pos={'relative'}
 									zIndex={1}>
 									<Box
 										rounded={'lg'}
-										mt={-12}
 										pos={'relative'}
 										height={'260px'}
 										// _after={{
@@ -254,10 +249,10 @@ const EmbedRoute = (props) => {
 										<Carousel medias={look.medias} height={260} width={282} />
 									</Box>
 									<Stack pt={3} align={'center'}>
-										<Text color={'gray.500'} fontSize={'sm'} textTransform={'uppercase'}>
+										<Text color={'gray.500'} fontSize={'xs'} textTransform={'uppercase'}>
 											{look.products.length} products in this look
 										</Text>
-										<Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
+										<Heading fontSize={'xl'} fontFamily={'body'} fontWeight={500}>
 											{look.name}
 										</Heading>
 										<Button
@@ -278,14 +273,17 @@ const EmbedRoute = (props) => {
 	}
 	
 	return  (
-		<Container maxW={'7xl'} p="12">
+		<Container maxW={'7xl'} py="5" pr="0">
 			<Center>
 				<Heading>Shop The Look</Heading>
 			</Center>
 			<br />
-			<SimpleGrid minChildWidth='330px' spacing='10px'>				
+			<Flickity
+				options={{groupCells: 1, pageDots: false, contain: true, autoPlay: false }}
+    >
 				{renderList()}
-			</SimpleGrid>
+			</Flickity>
+
 		</Container>
 	)
 
