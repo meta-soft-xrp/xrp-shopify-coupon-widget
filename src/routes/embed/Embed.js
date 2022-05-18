@@ -319,10 +319,10 @@ const EmbedRoute = (props) => {
 
   return (
     <Container maxW={"7xl"} py="5" pr="0">
-      <Center>
+      {/* <Center>
         <Heading>Shop The Look</Heading>
       </Center>
-      <br />
+      <br /> */}
       <Flickity
         options={{
           groupCells: 1,
