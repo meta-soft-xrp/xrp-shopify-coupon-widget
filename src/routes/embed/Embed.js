@@ -209,7 +209,7 @@ const EmbedRoute = (props) => {
     if (looks.get.loading) {
       return [1, 2, 3].map((e, i) => (
         <Center key={i}>
-          <Skeleton width="330px" height="330px" />
+          <Skeleton width="275px" height="400px" />
         </Center>
       ));
     } else if (looks.get.failure.error) {
@@ -257,7 +257,7 @@ const EmbedRoute = (props) => {
                 <Box
                   rounded={"lg"}
                   pos={"relative"}
-                  height={"440px"}
+                  height={"400px"}
                   // _after={{
                   // 	transition: 'all .3s ease',
                   // 	content: '""',
@@ -283,7 +283,7 @@ const EmbedRoute = (props) => {
 											objectFit={'cover'}
 											src={'https://images.unsplash.com/photo-1518051870910-a46e30d9db16?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80'}
 										/> */}
-                  <Carousel medias={look.medias} height={440} width={275} />
+                  <Carousel medias={look.medias} height={400} width={275} />
                 </Box>
                 <Stack pt={3} align={"center"}>
                   <Text
