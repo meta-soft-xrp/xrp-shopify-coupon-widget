@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Box,
   IconButton,
@@ -7,11 +7,11 @@ import {
   Heading,
   Text,
   Container,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 // Here we have used react-icons package for the icons
-import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
+import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 // And react-slick as our Carousel Lib
-import Slider from 'react-slick';
+import Slider from "react-slick";
 
 // Settings for the slider
 const settings = {
@@ -33,23 +33,23 @@ export default function CaptionCarousel(props) {
 
   // These are the breakpoints which changes the position of the
   // buttons as the screen size changes
-  const top = useBreakpointValue({ base: '90%', md: '50%' });
-  const side = useBreakpointValue({ base: '30%', md: '40px' });
-  
+  const top = useBreakpointValue({ base: "90%", md: "50%" });
+  const side = useBreakpointValue({ base: "30%", md: "40px" });
+
   const { medias = [] } = props;
   // This list contains all the data for carousels
   // This can be static or loaded from a server
   return (
     <Box
-      position={'relative'}
-      height={props.height || '400px'}
-      width={props.width || '400px'}
-      overflow={'hidden'}
+      position={"relative"}
+      height={props.height || "440px"}
+      width={props.width || "440px"}
+      overflow={"hidden"}
       borderWidth="1px"
-			rounded="lg"
-			shadow="lg"
+      rounded="lg"
+      shadow="lg"
       margin="0 auto"
-    > 
+    >
       {/* Left Icon */}
       <IconButton
         aria-label="left-arrow"
@@ -57,9 +57,10 @@ export default function CaptionCarousel(props) {
         position="absolute"
         left={side}
         top={top}
-        transform={'translate(-50%, -50%)'}
+        transform={"translate(-50%, -50%)"}
         zIndex={2}
-        onClick={() => slider?.slickPrev()}>
+        onClick={() => slider?.slickPrev()}
+      >
         <ArrowBackIcon size="40px" />
       </IconButton>
       {/* Right Icon */}
@@ -69,13 +70,18 @@ export default function CaptionCarousel(props) {
         position="absolute"
         right={side}
         top={top}
-        transform={'translate(50%, -50%)'}
+        transform={"translate(50%, -50%)"}
         zIndex={2}
-        onClick={() => slider?.slickNext()}>
+        onClick={() => slider?.slickNext()}
+      >
         <ArrowForwardIcon size="40px" />
       </IconButton>
       {/* Slider */}
-      <Slider autoplay={false} {...settings} ref={(slider) => setSlider(slider)}>
+      <Slider
+        autoplay={false}
+        {...settings}
+        ref={(slider) => setSlider(slider)}
+      >
         {medias.map((media, index) => (
           <Box
             key={index}
@@ -84,16 +90,22 @@ export default function CaptionCarousel(props) {
             backgroundPosition="center"
             backgroundRepeat="no-repeat"
             backgroundSize="cover"
-            backgroundImage={`url(${media.url ? media.url : media.src})`}>
+            backgroundImage={`url(${media.url ? media.url : media.src})`}
+          >
             {/* This is the block you need to change, to customize the caption */}
-            <Container padding="0" size="container.lg" height={props.height || '400px'} position="relative">
+            <Container
+              padding="0"
+              size="container.lg"
+              height={props.height || "440px"}
+              position="relative"
+            >
               <Stack
                 padding="0"
-                w={'full'}
+                w={"full"}
                 position="absolute"
                 bottom="0"
                 background="#00000094"
-            >
+              >
                 {/* <Heading padding="1" textAlign="center" color="white" fontSize={{ base: 'md', md: 'xl', lg: '2xl' }}>
                   {card.title}
                 </Heading>
