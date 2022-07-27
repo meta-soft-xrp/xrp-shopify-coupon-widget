@@ -32,6 +32,7 @@ import { ShopContext } from "../../context";
 import Flickity from "react-flickity-component";
 
 import "../../embed.css";
+import axios from "axios";
 
 const ProductsModal = (props) => {
   const { isOpen, onClose, productIds = [], lookId } = props;
@@ -186,9 +187,21 @@ const EmbedRoute = (props) => {
   const [productIds, setProductIds] = useState([]);
   const [isModalvis, setIsModalvis] = useState(false);
   const [currentLookId, setCurrentLookId] = useState("");
+  const [freePlanLimitReached, setFreePlanLimitReached] = useState(false);
 
-  useEffect(() => {
+  useEffect(async () => {
     getLooks({ shop });
+    try {
+      await axios.get(
+        `${process.env.REACT_APP_API_SHOPLOOKS_SERVER_URL}/api/post_views?shop=${shop}`
+      );
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_SHOPLOOKS_SERVER_URL}/api/get_views?shop=${shop}`
+      );
+      if (data && !data.subscribed && data.count > 1000) {
+        setFreePlanLimitReached(true);
+      }
+    } catch (e) {}
   }, []);
 
   const onLooksClick = ({ lookId, products }) => {
@@ -317,24 +330,38 @@ const EmbedRoute = (props) => {
     }
   };
 
-  return (
-    <Container maxW={"7xl"} py="5" pr="0">
-      {/* <Center>
+  if (freePlanLimitReached) {
+    return (
+      <Container maxW={"7xl"} py="5" pr="0">
+        <Center>
+          <Heading textAlign="center" size="sm">
+            Your free trial limit has been exceded. Please visit the Lookbook
+            app dashboard from your Shopify admin page to subscribe to the paid
+            plan.
+          </Heading>
+        </Center>
+      </Container>
+    );
+  } else {
+    return (
+      <Container maxW={"7xl"} py="5" pr="0">
+        {/* <Center>
         <Heading>Shop The Look</Heading>
       </Center>
       <br /> */}
-      <Flickity
-        options={{
-          groupCells: 1,
-          pageDots: false,
-          contain: true,
-          autoPlay: false,
-        }}
-      >
-        {renderList()}
-      </Flickity>
-    </Container>
-  );
+        <Flickity
+          options={{
+            groupCells: 1,
+            pageDots: false,
+            contain: true,
+            autoPlay: false,
+          }}
+        >
+          {renderList()}
+        </Flickity>
+      </Container>
+    );
+  }
 };
 
 export default EmbedRoute;
