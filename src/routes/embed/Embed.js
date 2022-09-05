@@ -23,16 +23,22 @@ import {
   ModalOverlay,
   ModalHeader,
   useBreakpointValue,
+  Input,
+  SkeletonText,
+  Alert,
+  AlertIcon
 } from "@chakra-ui/react";
 import Carousel from "../../components/carousel";
 import useLooksStore from "../../store/looks";
 import useProductsStore from "../../store/products";
-import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { ShopContext } from "../../context";
+import useXRPStore from "../../store/xrpl";
+import { ExternalLinkIcon,  } from "@chakra-ui/icons";
+import { ShopContext, XRPContext } from "../../context";
 import Flickity from "react-flickity-component";
-
+import XrpModal from "../../components/xrp-payment-modal";
 import "../../embed.css";
 import axios from "axios";
+// const xrpl = require('xrpl');
 
 const ProductsModal = (props) => {
   const { isOpen, onClose, productIds = [], lookId } = props;
@@ -178,6 +184,8 @@ const ProductsModal = (props) => {
   );
 };
 
+
+
 const EmbedRoute = (props) => {
   const bgColor = useColorModeValue("white", "gray.800");
   const looks = useLooksStore((state) => state.looks);
@@ -186,6 +194,7 @@ const EmbedRoute = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [productIds, setProductIds] = useState([]);
   const [isModalvis, setIsModalvis] = useState(false);
+  // const [xrpModalvis, setXrpModalvis] = useState(false);
   const [currentLookId, setCurrentLookId] = useState("");
   const [freePlanLimitReached, setFreePlanLimitReached] = useState(false);
 
@@ -254,6 +263,7 @@ const EmbedRoute = (props) => {
               productIds={productIds}
             />
           ) : null}
+
           {looks.get.success.data.map((look) => (
             <Center key={look.id || look.objectId}>
               <Box
@@ -308,6 +318,7 @@ const EmbedRoute = (props) => {
                   </Text>
                   <Heading fontSize={"xl"} fontFamily={"body"} fontWeight={500}>
                     {look.name}
+                    
                   </Heading>
                   <Button
                     marginTop={"10px"}
@@ -321,6 +332,8 @@ const EmbedRoute = (props) => {
                   >
                     Shop The Look
                   </Button>
+                    
+                  <XrpModal lookPrice={look.price} lookImage={look.medias} lookId={look.id || look.objectId} lookName={look.name} />
                 </Stack>
               </Box>
             </Center>

@@ -84,7 +84,7 @@ const useLooksStore = create((set, get) => ({
 					}
 				}
 			})));
-
+			console.log(id)
 			return data;
 
 		} catch (e) {

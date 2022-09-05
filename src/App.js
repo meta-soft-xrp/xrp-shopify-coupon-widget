@@ -1,21 +1,32 @@
-import * as React from 'react'
-
+import * as React from "react";
+import { useEffect } from "react";
 // 1. import `ChakraProvider` component
-import { ChakraProvider } from '@chakra-ui/react'
-import { ShopContext } from "./context";
-import EmbedRoute from './routes/embed/Embed';
+import { ChakraProvider } from "@chakra-ui/react";
+import { ShopContext, XRPContext } from "./context";
+import EmbedRoute from "./routes/embed/Embed";
 import { parseQuery } from "./utils/url";
-const { shop = '' } = parseQuery(window.location.search);
+import axios from "axios";
+// import { XummSdk } from "xumm-sdk";
+// import { XummSdkJwt} from "xumm-sdk";
+const { shop = "" } = parseQuery(window.location.search);
 
 function App() {
   // 2. Wrap ChakraProvider at the root of your app
+
+  const client = new window.xrpl.Client("wss://s.altnet.rippletest.net:51233");
+  const wallet = window.xrpl.Wallet.fromSeed("ssAeDF75joWhQMmHdBYWZp9kRA7QB"); // For testing load from env
+  // console.log(wallet);
+
+
   return (
     <ChakraProvider>
-      <ShopContext.Provider value={shop}>
-        <EmbedRoute />
-      </ShopContext.Provider>
+      <XRPContext.Provider value={{ wallet, client }}>
+        <ShopContext.Provider value={shop}>
+          <EmbedRoute />
+        </ShopContext.Provider>
+      </XRPContext.Provider>
     </ChakraProvider>
-  )
+  );
 }
 
 export default App;
