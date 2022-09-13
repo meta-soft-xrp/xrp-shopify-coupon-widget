@@ -19,26 +19,18 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalOverlay,
   ModalHeader,
-  useBreakpointValue,
-  Input,
-  SkeletonText,
-  Alert,
-  AlertIcon
 } from "@chakra-ui/react";
 import Carousel from "../../components/carousel";
 import useLooksStore from "../../store/looks";
 import useProductsStore from "../../store/products";
-import useXRPStore from "../../store/xrpl";
 import { ExternalLinkIcon,  } from "@chakra-ui/icons";
-import { ShopContext, XRPContext } from "../../context";
+import { ShopContext} from "../../context";
 import Flickity from "react-flickity-component";
 import XrpModal from "../../components/xrp-payment-modal";
 import "../../embed.css";
 import axios from "axios";
-// const xrpl = require('xrpl');
 
 const ProductsModal = (props) => {
   const { isOpen, onClose, productIds = [], lookId } = props;
@@ -332,8 +324,7 @@ const EmbedRoute = (props) => {
                   >
                     Shop The Look
                   </Button>
-                    
-                  <XrpModal lookPrice={look.price} lookImage={look.medias} lookId={look.id || look.objectId} lookName={look.name} />
+                  <XrpModal lookPrice={look.price} lookImage={look.medias} lookId={look.id || look.objectId} lookName={look.name} loading={true}/>
                 </Stack>
               </Box>
             </Center>

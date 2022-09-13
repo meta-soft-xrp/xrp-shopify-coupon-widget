@@ -4,16 +4,15 @@ import {
   AlertTitle,
   AlertDescription,
   Heading,
-  Text,
   Link,
-  Container,
 } from "@chakra-ui/react";
 
 import useXRPStore from "../../store/xrpl";
 
 const DiscountModal = (props) => {
   const xrpPaymentState = useXRPStore((state) => state.xrpPaymentState);
-  // console.log("A ", xrpPaymentState);
+
+  console.log(xrpPaymentState.post.success.data);
   if (!xrpPaymentState.post.success.ok) {
     return null;
   }
@@ -46,7 +45,7 @@ const DiscountModal = (props) => {
           <Link
             color="teal"
             target="_blank"
-            href={`${process.env.REACT_APP_XRP_TRANSACTION_REFFERENCE}transactions/${xrpPaymentState.post.success.data.hash}`}
+            href={`${process.env.REACT_APP_XRP_TRANSACTION_REFFERENCE}transactions/${xrpPaymentState.post.success.data.result?.request?.transaction}`}
           >
             Check Transaction Refference here
           </Link>

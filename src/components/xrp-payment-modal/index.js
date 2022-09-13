@@ -6,43 +6,35 @@ import {
   useDisclosure,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalOverlay,
   ModalHeader,
-  useBreakpointValue,
   Input,
   SkeletonText,
   Alert,
   AlertIcon,
   Image,
-  Img,
   Heading,
   Grid,
   GridItem,
-  ChakraProvider,
-  chakra,
-  ControlBox,
   Center,
+  Spinner,
 } from "@chakra-ui/react";
-import useLooksStore from "../../store/looks";
 import useXRPStore from "../../store/xrpl";
 import DiscountModal from "./discount";
 import { ShopContext } from "../../context";
+
 const XrpModal = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [buyyerAddress, setBuyyerAddress] = useState("");
-  const [productId, setProductId] = useState("");
-  const [qrCode, setQrCode] = useState("");
   const shop = useContext(ShopContext);
   const xrpPaymentState = useXRPStore((state) => state.xrpPaymentState);
   const postXRPpayment = useXRPStore((state) => state.postXRPpayment);
   const postXummPayment = useXRPStore((state) => state.postXummPayment);
+  const verifyXummPayment = useXRPStore((state) => state.verifyXummPayment);
   const resetXRPPaymentState = useXRPStore(
     (state) => state.resetXRPPaymentState
   );
-  
 
   const submitHandler = () => {
     const XRPbuyerAddress = buyyerAddress;
@@ -50,7 +42,6 @@ const XrpModal = (props) => {
       return;
     } else {
       postXRPpayment({ XRPbuyerAddress });
-      // setQrCode(xrpPaymentState.post.success.data);
     }
   };
 
@@ -59,15 +50,46 @@ const XrpModal = (props) => {
     onClose();
   };
 
-  const onPayClick = ({ lookId }) => {
-    postXummPayment({ lookId, shop });
-
+  const onPayClick = async ({ lookId }) => {
     onOpen();
+    const data = await postXummPayment({ lookId, shop });
+    
+    
+    const client = new WebSocket(data.status);
+
+    client.onopen = () => {
+      console.log("Connected.....");
+    };
+
+    client.onmessage = async (e) => {
+      const newObj = await JSON.parse(e.data);
+      console.log(e.data, newObj);
+      console.log(newObj.txid);
+      const txid = await newObj.txid;
+      console.log(txid);
+      if(txid !== undefined){
+        const resp = await verifyXummPayment({ txid });
+      }
+      
+    };
   };
 
   const renderPaymentStatus = () => {
     if (xrpPaymentState.post.loading) {
-      return <SkeletonText mt="4" noOfLines={4} spacing="4" />;
+      // return <SkeletonText mt="4" noOfLines={4} spacing="4" />;
+      
+
+      return <>
+      <Box minH={'100px'} width="20%" m='auto' p={5}>
+      <Spinner
+      thickness='4px'
+      speed='0.65s'
+      emptyColor='gray.200'
+      color='blue.500'
+      size='xl'
+    />;
+      </Box>
+      </>
     } else if (xrpPaymentState.post.failure.error) {
       return (
         <>
@@ -96,18 +118,16 @@ const XrpModal = (props) => {
         <Box p={10}>
           <Grid gap={6}>
             <GridItem>
-              
-                <Heading size="xl" fontWeight="bold">
-                  {props.lookName}
-                </Heading>
-                <Text>{props.lookPrice ? props.lookPrice : "100"} XRP</Text>
-             
+              <Heading size="xl" fontWeight="bold">
+                {props.lookName}
+              </Heading>
+              <Text>{props.lookPrice ? props.lookPrice : "100"} XRP</Text>
             </GridItem>
             <GridItem alignContent={"center"}>
               <Center width={"100%"}>
                 <Image
                   border={"2px"}
-                  src={xrpPaymentState.post.success.data}
+                  src={xrpPaymentState.post.success?.data?.qr}
                   width="200px"
                 />
               </Center>
@@ -134,6 +154,7 @@ const XrpModal = (props) => {
           })
         }
         isFullWidth
+        
       >
         Pay {props.lookPrice ? props.lookPrice : "100"} XRP for % discount
       </Button>

@@ -1,11 +1,9 @@
 import * as React from "react";
-import { useEffect } from "react";
 // 1. import `ChakraProvider` component
 import { ChakraProvider } from "@chakra-ui/react";
 import { ShopContext, XRPContext } from "./context";
 import EmbedRoute from "./routes/embed/Embed";
 import { parseQuery } from "./utils/url";
-import axios from "axios";
 // import { XummSdk } from "xumm-sdk";
 // import { XummSdkJwt} from "xumm-sdk";
 const { shop = "" } = parseQuery(window.location.search);

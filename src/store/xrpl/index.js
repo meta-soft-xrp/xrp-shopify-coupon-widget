@@ -21,7 +21,7 @@ const INITIAL_XRP_STATE = {
 };
 
 const useXRPStore = create((set, get) => ({
-  xrpPaymentState: INITIAL_XRP_STATE,
+  xrpPaymentState: INITIAL_XRP_STATE, 
   resetXRPPaymentState: () => {
     set(
       produce((state) => ({
@@ -120,8 +120,64 @@ const useXRPStore = create((set, get) => ({
     );
     try{
       const { data } = await axios.get(`${process.env.REACT_APP_API_SHOPLOOKS_SERVER_URL}/api/get_xrp_payment?shop=${shop}&id=${lookId}`);
-      console.log(data);
+     
+      set(
+        produce((state) => ({
+          ...state,
+          xrpPaymentState: {
+            ...state.xrpPaymentState,
+            post:{
+              ...INITIAL_XRP_STATE.post,
+              loading: false,
+              success: {
+                data,
+              }
+            }
+          }
+        }))
+      )
+      return data;
+    }
+    catch (e) {
+      console.log(e.message);
+      set(
+        produce((state) => ({
+          ...state,
+          xrpPaymentState: {
+            ...state.xrpPaymentState,
+            post: {
+              ...INITIAL_XRP_STATE.post,
+              loading: false,
+              success: {
+                ok: false,
+              },
+              failure: {
+                error: false,
+                message: "Please Verify the Merchant Address",
+              },
+            },
+          },
+        }))
+      );
+    }
+  },
+  verifyXummPayment: async({ txid } = {}) => {
+    set(
+      produce((state) => ({
+        ...state,
+        xrpPaymentState: {
+          ...state.xrpPaymentState,
+          post: {
+            ...INITIAL_XRP_STATE.post,
+            loading: true,
+          },
+        },
+      }))
+    );
+    try{
+      const { data } = await axios.get(`${process.env.REACT_APP_API_SHOPLOOKS_SERVER_URL}/api/verify_xrp_payment?txid=${txid}`);
 
+      console.log(data);
       
       set(
         produce((state) => ({
@@ -133,6 +189,7 @@ const useXRPStore = create((set, get) => ({
               loading: false,
               success: {
                 data: data,
+                ok: true,
               }
             }
           }
