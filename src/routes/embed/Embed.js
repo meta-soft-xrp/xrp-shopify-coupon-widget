@@ -324,7 +324,7 @@ const EmbedRoute = (props) => {
                   >
                     Shop The Look
                   </Button>
-                  <XrpModal lookPrice={look.price} lookImage={look.medias} lookId={look.id || look.objectId} lookName={look.name} loading={true}/>
+                  <XrpModal lookXrpPrice={look.xrpPrice} lookImage={look.medias} lookId={look.id || look.objectId} lookName={look.name} />
                 </Stack>
               </Box>
             </Center>
