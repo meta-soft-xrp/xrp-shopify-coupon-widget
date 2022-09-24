@@ -121,7 +121,7 @@ const XrpModal = (props) => {
               <Heading size="xl" fontWeight="bold">
                 {props.lookName}
               </Heading>
-              <Text>{props.lookXrpPrice ? props.lookXrpPrice : "100"} XRP</Text>
+              <Text>{props.lookXrpPrice ? props.lookXrpPrice : "0"} XRP</Text>
             </GridItem>
             <GridItem alignContent={"center"}>
               <Center width={"100%"}>
@@ -155,7 +155,7 @@ const XrpModal = (props) => {
         }
         isFullWidth
       >
-        Pay {props.lookXrpPrice ? props.lookXrpPrice : "100"} XRP to get 100% off
+        Pay {props.lookXrpPrice ? props.lookXrpPrice : "0"} XRP to get 100% off
       </Button>
 
       <Modal isOpen={isOpen} onClose={onModalClose} size="xl">
