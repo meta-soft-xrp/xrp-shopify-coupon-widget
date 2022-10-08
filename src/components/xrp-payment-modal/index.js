@@ -9,16 +9,19 @@ import {
   ModalContent,
   ModalOverlay,
   ModalHeader,
+  ModalCloseButton,
   Input,
-  SkeletonText,
   Alert,
   AlertIcon,
+  AlertTitle,
+  AlertDescription,
   Image,
   Heading,
   Grid,
   GridItem,
   Center,
   Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import useXRPStore from "../../store/xrpl";
 import DiscountModal from "./discount";
@@ -35,6 +38,7 @@ const XrpModal = (props) => {
   const resetXRPPaymentState = useXRPStore(
     (state) => state.resetXRPPaymentState
   );
+  const toast = useToast();
 
   const submitHandler = () => {
     const XRPbuyerAddress = buyyerAddress;
@@ -53,8 +57,7 @@ const XrpModal = (props) => {
   const onPayClick = async ({ lookId }) => {
     onOpen();
     const data = await postXummPayment({ lookId, shop });
-    
-    
+
     const client = new WebSocket(data.status);
 
     client.onopen = () => {
@@ -67,29 +70,30 @@ const XrpModal = (props) => {
       console.log(newObj.txid);
       const txid = await newObj.txid;
       console.log(txid);
-      if(txid !== undefined){
+      if (txid !== undefined) {
         const resp = await verifyXummPayment({ txid });
       }
-      
     };
   };
 
   const renderPaymentStatus = () => {
     if (xrpPaymentState.post.loading) {
       // return <SkeletonText mt="4" noOfLines={4} spacing="4" />;
-      
 
-      return <>
-      <Box minH={'100px'} width="20%" m='auto' p={5}>
-      <Spinner
-      thickness='4px'
-      speed='0.65s'
-      emptyColor='gray.200'
-      color='blue.500'
-      size='xl'
-    />;
-      </Box>
-      </>
+      return (
+        <>
+          <Box minH={"100px"} width="20%" m="auto" p={5}>
+            <Spinner
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="blue.500"
+              size="xl"
+            />
+            ;
+          </Box>
+        </>
+      );
     } else if (xrpPaymentState.post.failure.error) {
       return (
         <>
@@ -112,16 +116,46 @@ const XrpModal = (props) => {
         </>
       );
     } else if (xrpPaymentState.post.success.ok) {
-      return <DiscountModal />;
+      const { result } = xrpPaymentState.post.success.data;
+      if (result.error) {
+        toast({
+          title: "XRP Error.",
+          description: result.error_message,
+          status: "error",
+          isClosable: true,
+        });
+        return (
+          <Alert
+            status="error"
+            variant="subtle"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            textAlign="center"
+          >
+            <AlertIcon boxSize="40px" mr={0} />
+            <AlertTitle mt={4} mb={1} fontSize="lg">
+              {result.error}
+            </AlertTitle>
+            <AlertDescription maxWidth="sm">
+              {result.error_message}
+            </AlertDescription>
+          </Alert>
+        );
+      } else {
+        return <DiscountModal />;
+      }
     } else {
       return (
         <Box p={10}>
           <Grid gap={6}>
             <GridItem>
-              <Heading size="xl" fontWeight="bold">
+              <Heading size="xl" fontWeight="bold" textAlign="center">
                 {props.lookName}
               </Heading>
-              <Text>{props.lookXrpPrice ? props.lookXrpPrice : "0"} XRP</Text>
+              <Text size="lg" textAlign="center">
+                {props.lookXrpPrice ? props.lookXrpPrice : "0"} XRP
+              </Text>
             </GridItem>
             <GridItem alignContent={"center"}>
               <Center width={"100%"}>
@@ -161,9 +195,8 @@ const XrpModal = (props) => {
       <Modal isOpen={isOpen} onClose={onModalClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader bg="messenger.500" color="#fff">
-            Open xApp
-          </ModalHeader>
+          <ModalHeader colorScheme="blue.500">Open Xumm App</ModalHeader>
+          <ModalCloseButton />
           <ModalBody>{renderPaymentStatus()}</ModalBody>
         </ModalContent>
       </Modal>
