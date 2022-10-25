@@ -1,72 +1,138 @@
-# README coming in few hours
+## XRP Shop Widget
+This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
+Below you will find some information on how to perform common tasks.
 
-# Getting Started with Create React App
+## Display looks
+<table>
+<tr><td>
+<img src='./public/slider.jpg' width=600/>
+</td>
+</tr>
+</table>
+- Fetchings looks data using api request 
+```
+-src
+  |-store
+    |-looks
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+```
+```
+const { data } = await axios.get(`${process.env.REACT_APP_API_SHOPLOOKS_SERVER_URL}/api/get_looks?shop=${shop}&id=${id}`);
+```
+- Display data in carousel using Recat Slick
 
-## Available Scripts
 
-In the project directory, you can run:
+```
+-src
+  |-routes
+    |-Embed.js
 
-### `npm start`
+```
+  - Look data to display in carousel 
+  ```
+  <Carousel medias={look.medias} height={400} width={275} />
+  ```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Payment Modal Popup
+- Parsing payment data to payment modal on click of payment button
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+<XrpModal lookXrpPrice={look.xrpPrice} lookImage={look.medias} lookId={look.id || look.objectId} lookName={look.name} />
 
-### `npm test`
+```
+```
+-src
+ |- xrp-payment-modal
+  |- index.js
+```
+<table>
+<tr>
+<td><img src="./public/payment-modal.png" width="300"/></td>
+</tr>
+</table>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Fetching payment data using api by parsing shop name and lookId
+    - will get product data, xrp price, qr-code for payment using xumm app
+```
+-src
+  |- store
+    |- xrpl
+```
 
-### `npm run build`
+```
+const { data } = await axios.get(`${process.env.REACT_APP_API_SHOPLOOKS_SERVER_URL}/api/get_xrp_payment?shop=${shop}&id=${lookId}`);
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  - create new **Websockt** connection to interact with api request while posting the payment requet 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+const onPayClick = async ({ lookId }) => {
+    onOpen();
+    const data = await postXummPayment({ lookId, shop });
+    
+    const client = new WebSocket(data.status);
 
-### `npm run eject`
+    client.onopen = () => {
+      console.log("Connected.....");
+    };
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+    client.onmessage = async (e) => {
+      const newObj = await JSON.parse(e.data);
+      console.log(e.data, newObj);
+      console.log(newObj.txid);
+      const txid = await newObj.txid;
+      console.log(txid);
+      if(txid !== undefined){
+        const resp = await verifyXummPayment({ txid });
+      } 
+    };
+  };
+```
+  - once the payment is done will get the response from XUMM App.
+    - for more details refer the API documentation in [XUMM Website](https://xumm.readme.io/)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  - post the transaction id get from payment response to verify
+```
+const { data } = await axios.get(`${process.env.REACT_APP_API_SHOPLOOKS_SERVER_URL}/api/verify_xrp_payment?txid=${txid}`);
+```
+  - display the transaction response 
+```
+-src
+  |-components
+    |-- xrp-payment-modal
+      |--- discount.js
+```
+<table>
+<tr>
+<td><img src="./public/success.png" width="300"/></td>
+</tr>
+</table>
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
+-src
+  |-components
+    |-- xrp-payment-modal
+      |--- discount.js
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Payment Uusing XUMM app
+- Open Xumm app in your smartphone
+- Scan the qr code displayed on screen
+- Review and sign the transaction 
+- you can see the transaction details in Xumm App
+- After the transaction is completed you will see the success message screen with generated coupen code and link to see the transaction
 
-## Learn More
+<table>
+<tr>
+<td><img src="./public/screenshoot1.png" width="200"/></td>
+<td><img src="./public/screenshoot2.png" width="200"/></td>
+<td><img src="./public/screenshoot3.png" width="200"/></td>
+<td><img src="./public/screenshoot4.png" width="200"/></td>
+<td><img src="./public/screenshoot5.png" width="200"/></td>
+<td><img src="./public/screenshoot6.png" width="200"/></td>
+<td><img src="./public/screenshoot7.png" width="200"/></td>
+<td><img src="./public/screenshoot8.png" width="200"/></td>
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+</tr>
+</table>
