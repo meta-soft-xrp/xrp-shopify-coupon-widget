@@ -49,7 +49,7 @@ const DiscountModal = (props) => {
           >
             Check Transaction Refference here
           </Link>
-          <Heading>Qu-2022-eefFII</Heading>
+          <Heading>xrp-shop-1xhheu</Heading>
         </AlertDescription>
       </Alert>
     </>
