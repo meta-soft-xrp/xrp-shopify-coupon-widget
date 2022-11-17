@@ -166,7 +166,7 @@ const ProductsModal = (props) => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader margin="0" padding="0" textAlign="center" mt="12px">
-            Shop the products in this look
+          Shop this catalogue with XRP
           </ModalHeader>
           <ModalCloseButton size="lg" border="1px solid black" />
           <ModalBody>{renderProducts()}</ModalBody>
@@ -306,7 +306,7 @@ const EmbedRoute = (props) => {
                     fontSize={"xs"}
                     textTransform={"uppercase"}
                   >
-                    {look.products.length} products in this look
+                    {look.products.length} products in this catalogue
                   </Text>
                   <Heading fontSize={"xl"} fontFamily={"body"} fontWeight={500}>
                     {look.name}
@@ -322,7 +322,7 @@ const EmbedRoute = (props) => {
                     }
                     isFullWidth
                   >
-                    Shop The Look
+                    Shop The Catalogue With XRP
                   </Button>
                   <XrpModal lookXrpPrice={look.xrpPrice} lookImage={look.medias} lookId={look.id || look.objectId} lookName={look.name} />
                 </Stack>
