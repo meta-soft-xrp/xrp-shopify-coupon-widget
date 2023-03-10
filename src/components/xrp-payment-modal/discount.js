@@ -25,7 +25,6 @@ const DiscountModal = (props) => {
             ? "success"
             : "error"
         }
-        
         variant="subtle"
         flexDirection="column"
         alignItems="center"
@@ -45,7 +44,7 @@ const DiscountModal = (props) => {
           <Link
             color="teal"
             target="_blank"
-            href={`${process.env.REACT_APP_XRP_TRANSACTION_REFFERENCE}transactions/${xrpPaymentState.post.success.data.result?.request?.transaction}`}
+            href={`${process.env.REACT_APP_XRP_TRANSACTION_REFFERENCE}transactions/${xrpPaymentState.post.success.data.result?.hash}`}
           >
             Check Transaction Refference here
           </Link>
